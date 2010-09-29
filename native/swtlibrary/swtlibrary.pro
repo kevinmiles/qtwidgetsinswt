@@ -6,9 +6,21 @@ DESTDIR = ../../plugins/org.symbian.tools.eclipse.webkit.swt
 TEMPLATE = lib dll
 OBJECTS_DIR = Build
 
-mac {
+macx {
     QMAKE_EXTENSION_SHLIB = jnilib
     INCLUDEPATH += /System/Library/Frameworks/JavaVM.framework/Headers
     OBJECTIVE_SOURCES += SWTQtContainer_cocoa.mm
     LIBS += -framework AppKit -framework Cocoa
+}
+win32 {
+    JNI_INCLUDE = "$$(JAVA_HOME)/include"
+    !exists( $$JNI_INCLUDE ) {
+	error("JAVA_HOME should point to JDK installation")
+    }
+    INCLUDEPATH += $$JNI_INCLUDE $$JNI_INCLUDE/win32"
+    SOURCES += SWTQtContainer_win32.cpp
+    HEADERS += ../qtwinmigrate/QMfcApp ../qtwinmigrate/qmfcapp.h ../qtwinmigrate/QWinHost
+    HEADERS += ../qtwinmigrate/qwinhost.h ../qtwinmigrate/QWinWidget ../qtwinmigrate/qwinwidget.h 
+    SOURCES += ../qtwinmigrate/qmfcapp.cpp ../qtwinmigrate/qwinhost.cpp ../qtwinmigrate/qwinwidget.cpp 
+    LIBS += -luser32
 }

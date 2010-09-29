@@ -1,9 +1,15 @@
 syntax: regexp
 ^[\w\./]*/bin/
-.*/Thumbs.db
-.*\.DS_Store
-.*\.o
+.*/Thumbs.db$
+.*\.DS_Store$
+.*\.o$
 .*\.xcodeproj/.*
-native/[\w\.]*/Build
-native/[\w\.]*/Makefile
-java/[\w\.]*/[\w\. ]*\.jnilib
+native/[\w\. ]*/[bB]uild/
+native/[\w\. ]*/[rR]elease/
+native/[\w\. ]*/[dD]ebug/
+native/[\w\. ]*/Makefile$
+native/[\w\. ]*/Makefile.[dD]ebug$
+native/[\w\. ]*/Makefile.[rR]elease$
+plugins/[\w\. ]*/[\w\. ]*\.jnilib$
+plugins/[\w\. ]*/[\w\. ]*\.a$
+plugins/[\w\. ]*/[\w\. ]*\.dll$

@@ -16,7 +16,6 @@
  * Failures and causes:
  */
 #include "SWTQtContainer.h"
-#include <stdio.h>
 
 SWTQtContainer::SWTQtContainer(int handle, QWebViewDelegate *delegate) {
 	panel = create(handle);
