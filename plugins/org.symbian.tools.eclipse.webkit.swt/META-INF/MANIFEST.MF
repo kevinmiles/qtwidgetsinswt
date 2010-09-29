@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Embedding Qt Widgets in SWT
+Bundle-SymbolicName: org.symbian.tools.eclipseqt.swt
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Symbian Foundation
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.swt;bundle-version="3.6.0"
+Eclipse-PlatformFilter: (&(|(&(osgi.ws=cocoa)(osgi.os=macosx))(osgi.os=windows))(osgi.arch=x86))
+Export-Package: org.symbian.tools.eclipseqt.qwebview

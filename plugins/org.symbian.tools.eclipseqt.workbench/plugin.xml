@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.browserSupport">
+      <support
+            class="org.symbian.tools.eclipseqt.workbench.browser.QtBasedBrowserSupport"
+            default="false">
+      </support>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.symbian.tools.eclipseqt.workbench.browser.QtBasedBrowser"
+            default="false"
+            icon="icons/obj16/browser.gif"
+            id="org.symbian.tools.eclipseqt.browsereditor"
+            name="Qt WebKit-based Browser">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.browser.browsers">
+      <browser
+            factoryclass="org.symbian.tools.eclipseqt.workbench.browser.QtBasedBrowserFactory"
+            id="org.symbian.tools.eclipseqt.browser"
+            name="Qt WebKit"
+            os="Win32,MacOSX">
+      </browser>
+   </extension>
+
+</plugin>

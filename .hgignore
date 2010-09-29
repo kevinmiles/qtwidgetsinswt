@@ -1,0 +1,9 @@
+syntax: regexp
+^[\w\./]*/bin/
+.*/Thumbs.db
+.*\.DS_Store
+.*\.o
+.*\.xcodeproj/.*
+native/[\w\.]*/Build
+native/[\w\.]*/Makefile
+java/[\w\.]*/[\w\. ]*\.jnilib
