@@ -17,6 +17,10 @@
  */
 package org.symbian.tools.eclipseqt.internal;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -28,49 +32,46 @@ import org.eclipse.swt.widgets.Composite;
  * @author Eugene Ostroukhov
  */
 public class SWT_Qt {
-	private static final String COCOA_NSVIEW = "org.eclipse.swt.internal.cocoa.NSView";
-	private static final String WINDOWS_OS_CLASS = "org.eclipse.swt.internal.win32.OS";
+	private static IPlatformDelegate delegate;
 
-	private static Boolean isMac;
-	private static Boolean isWindows;
+	private static synchronized IPlatformDelegate getDelegate() {
+		if (delegate == null) {
+			InputStream stream = SWT_Qt.class.getClassLoader()
+					.getResourceAsStream("/org/symbian/tools/eclipseqt/internal/platform.properties");
+			if (stream != null) {
+				try {
+					Properties props = new Properties();
+					props.load(stream);
+					delegate = (IPlatformDelegate) Class.forName(props.getProperty("delegate.class")).newInstance();
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						stream.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			if (delegate == null) {
+				delegate = new IPlatformDelegate() {
+					public void verifyRunning() {
+						throw new IllegalArgumentException(
+								"Missing platform-specific fragment. Either your installation is broken or your SWT version is not supported");
+					}
+
+					public int getNativeId(Composite control) {
+						throw new IllegalArgumentException(
+								"Missing platform-specific fragment. Either your installation is broken or your SWT version is not supported");
+					}
+				};
+			}
+		}
+		return delegate;
+	}
 
 	public static synchronized void verifyRunning() {
-		if (isWindows32()) {
-			System.loadLibrary("swtlibrary");
-		} else if (isMacCocoa32()) {
-			System.loadLibrary("swtlibrary");
-		} else {
-			throw new IllegalStateException("Unsupported operating system");
-		}
-	}
-
-	private static boolean isWindows32() {
-		if (isWindows == null) {
-			try {
-				SWT_Qt.class.getClassLoader().loadClass(WINDOWS_OS_CLASS);
-				isWindows = Boolean.TRUE;
-			} catch (ClassNotFoundException e) {
-				// Exception is expected
-				isWindows = Boolean.FALSE;
-			}
-		}
-		return isWindows.booleanValue();
-	}
-
-	private static boolean isMacCocoa32() {
-		// Note - we are really testing if there's proper SWT version. We can't
-		// simply rely
-		// it's there by testing os.name and other system props
-		if (isMac == null) {
-			try {
-				SWT_Qt.class.getClassLoader().loadClass(COCOA_NSVIEW);
-				isMac = Boolean.TRUE;
-			} catch (ClassNotFoundException e) {
-				// Quite expected - with the Mac market share less then 10%
-				isMac = Boolean.FALSE;
-			}
-		}
-		return isMac.booleanValue();
+		getDelegate().verifyRunning();
 	}
 
 	/**
@@ -79,18 +80,7 @@ public class SWT_Qt {
 	 * peek into SWT implementation details.
 	 */
 	public static int getNativeId(Composite control) {
-		try {
-			if (isWindows32()) {
-				return control.getClass().getField("handle").getInt(control);
-			} else if (isMacCocoa32()) {
-				Object nsView = control.getClass().getField("view")
-						.get(control);
-				return nsView.getClass().getField("id").getInt(nsView);
-			}
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-		throw new IllegalStateException("Unsuppoted SWT version");
+		return getDelegate().getNativeId(control);
 	}
 
 }

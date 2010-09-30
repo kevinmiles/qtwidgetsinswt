@@ -16,3 +16,4 @@ plugins/[\w\. ]*/[\w\. ]*\.dll$
 native/.*/.project$
 native/.*/.cproject$
 native/.*/[\w\. ]*\.pro\.user$
+native/.*/moc_.*

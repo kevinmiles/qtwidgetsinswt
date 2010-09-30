@@ -27,10 +27,10 @@ import org.eclipse.swt.widgets.Composite;
  * 
  * @author Eugene Ostroukhov
  */
-public class SWT_Qt {
+public class WindowsDelegate implements IPlatformDelegate {
 	private static boolean librariesLoaded = false;
 
-	public static synchronized void verifyRunning() {
+	public void verifyRunning() {
 		if (!librariesLoaded) {
 			System.loadLibrary("swtlibrary");
 			librariesLoaded = true;
@@ -42,7 +42,7 @@ public class SWT_Qt {
 	 * container and Qt objects. This code relies on reflection as it needs to
 	 * peek into SWT implementation details.
 	 */
-	public static int getNativeId(Composite control) {
+	public int getNativeId(Composite control) {
 		return control.handle;
 	}
 }

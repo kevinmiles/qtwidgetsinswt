@@ -10,6 +10,7 @@ macx {
     INCLUDEPATH += /System/Library/Frameworks/JavaVM.framework/Headers
     OBJECTIVE_SOURCES += SWTQtContainer_cocoa.mm
     LIBS += -framework AppKit -framework Cocoa
+    DESTDIR = ../../plugins/org.symbian.tools.eclipseqt.swt.cocoa
 }
 win32 {
     DESTDIR = ../../plugins/org.symbian.tools.eclipseqt.swt.win32
