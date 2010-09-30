@@ -2,7 +2,6 @@ HEADERS = SWTQtContainer.h natives.h
 SOURCES = SWTQtContainer.cpp natives.cpp
 CONFIG += qt plugin
 QT += core gui webkit
-DESTDIR = ../../plugins/org.symbian.tools.eclipse.webkit.swt 
 TEMPLATE = lib dll
 OBJECTS_DIR = Build
 
@@ -13,6 +12,7 @@ macx {
     LIBS += -framework AppKit -framework Cocoa
 }
 win32 {
+    DESTDIR = ../../plugins/org.symbian.tools.eclipseqt.swt.win32
     JNI_INCLUDE = "$$(JAVA_HOME)/include"
     !exists( $$JNI_INCLUDE ) {
 	error("JAVA_HOME should point to JDK installation")

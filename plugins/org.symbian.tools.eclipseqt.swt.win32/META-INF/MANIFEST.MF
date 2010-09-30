@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SWT/Win32 integration for Qt components
+Bundle-SymbolicName: org.symbian.tools.eclipseqt.swt.win32
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Symbian Foundation
+Fragment-Host: org.symbian.tools.eclipseqt.swt;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Eclipse-PlatformFilter: (&(osgi.os=win32)(osgi.arch=x86))
