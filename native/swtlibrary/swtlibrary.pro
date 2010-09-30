@@ -2,7 +2,7 @@ HEADERS += SWTQtContainer.h natives.h
 SOURCES += SWTQtContainer.cpp natives.cpp
 CONFIG += qt plugin
 QT += core gui webkit
-TEMPLATE += lib dll
+TEMPLATE = lib dll
 OBJECTS_DIR += Build
 
 macx {
