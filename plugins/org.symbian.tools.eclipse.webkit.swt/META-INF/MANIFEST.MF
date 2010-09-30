@@ -7,5 +7,5 @@ Bundle-Vendor: Symbian Foundation
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.swt;bundle-version="3.6.0"
-Eclipse-PlatformFilter: (&(|(&(osgi.ws=cocoa)(osgi.os=macosx))(osgi.os=windows))(osgi.arch=x86))
+Eclipse-PlatformFilter: (&(|(&(osgi.ws=cocoa)(osgi.os=macosx))(osgi.os=win32))(osgi.arch=x86))
 Export-Package: org.symbian.tools.eclipseqt.qwebview

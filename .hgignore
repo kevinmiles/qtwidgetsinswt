@@ -13,3 +13,6 @@ native/[\w\. ]*/Makefile.[rR]elease$
 plugins/[\w\. ]*/[\w\. ]*\.jnilib$
 plugins/[\w\. ]*/[\w\. ]*\.a$
 plugins/[\w\. ]*/[\w\. ]*\.dll$
+native/.*/.project$
+native/.*/.cproject$
+native/.*/[\w\. ]*\.pro\.user$

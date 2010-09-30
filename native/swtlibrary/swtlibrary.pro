@@ -19,8 +19,8 @@ win32 {
     }
     INCLUDEPATH += $$JNI_INCLUDE $$JNI_INCLUDE/win32"
     SOURCES += SWTQtContainer_win32.cpp
-    HEADERS += ../qtwinmigrate/QMfcApp ../qtwinmigrate/qmfcapp.h ../qtwinmigrate/QWinHost
-    HEADERS += ../qtwinmigrate/qwinhost.h ../qtwinmigrate/QWinWidget ../qtwinmigrate/qwinwidget.h 
-    SOURCES += ../qtwinmigrate/qmfcapp.cpp ../qtwinmigrate/qwinhost.cpp ../qtwinmigrate/qwinwidget.cpp 
+    HEADERS += ../qtwinmigrate/QMfcApp ../qtwinmigrate/qmfcapp.h ../qtwinmigrate/QWinWidget ../qtwinmigrate/qwinwidget.h 
+    SOURCES += ../qtwinmigrate/qmfcapp.cpp ../qtwinmigrate/qwinwidget.cpp 
     LIBS += -luser32
+    QMAKE_LFLAGS += -Wl,--kill-at -D_JNI_IMPLEMENTATION_
 }

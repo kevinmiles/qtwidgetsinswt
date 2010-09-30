@@ -29,15 +29,32 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class SWT_Qt {
 	private static final String COCOA_NSVIEW = "org.eclipse.swt.internal.cocoa.NSView";
+	private static final String WINDOWS_OS_CLASS = "org.eclipse.swt.internal.win32.OS";
 
 	private static Boolean isMac;
+	private static Boolean isWindows;
 
 	public static synchronized void verifyRunning() {
-		if (isMacCocoa32()) {
+		if (isWindows32()) {
+			System.loadLibrary("swtlibrary");
+		} else if (isMacCocoa32()) {
 			System.loadLibrary("swtlibrary");
 		} else {
 			throw new IllegalStateException("Unsupported operating system");
 		}
+	}
+
+	private static boolean isWindows32() {
+		if (isWindows == null) {
+			try {
+				SWT_Qt.class.getClassLoader().loadClass(WINDOWS_OS_CLASS);
+				isWindows = Boolean.TRUE;
+			} catch (ClassNotFoundException e) {
+				// Exception is expected
+				isWindows = Boolean.FALSE;
+			}
+		}
+		return isWindows.booleanValue();
 	}
 
 	private static boolean isMacCocoa32() {
@@ -57,13 +74,15 @@ public class SWT_Qt {
 	}
 
 	/**
-	 * Returns integer that can be used by native library to build native container
-	 * and Qt objects. This code relies on reflection as it needs to peek into SWT
-	 * implementation details.
+	 * Returns integer that can be used by native library to build native
+	 * container and Qt objects. This code relies on reflection as it needs to
+	 * peek into SWT implementation details.
 	 */
 	public static int getNativeId(Composite control) {
 		try {
-			if (isMacCocoa32()) {
+			if (isWindows32()) {
+				return control.getClass().getField("handle").getInt(control);
+			} else if (isMacCocoa32()) {
 				Object nsView = control.getClass().getField("view")
 						.get(control);
 				return nsView.getClass().getField("id").getInt(nsView);

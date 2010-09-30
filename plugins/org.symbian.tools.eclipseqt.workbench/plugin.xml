@@ -27,5 +27,21 @@
             os="Win32,MacOSX">
       </browser>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.symbian.tools.eclipseqt.workbench.qtviews"
+            name="Qt-Based Views">
+      </category>
+      <view
+            allowMultiple="true"
+            category="org.symbian.tools.eclipseqt.workbench.qtviews"
+            class="org.symbian.tools.eclipseqt.workbench.browser.QtBasedBrowserView"
+            icon="icons/obj16/browser.gif"
+            id="org.symbian.tools.eclipseqt.workbench.browser"
+            name="Qt WebKit Browser"
+            restorable="true">
+      </view>
+   </extension>
 
 </plugin>
