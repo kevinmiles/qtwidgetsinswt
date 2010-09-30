@@ -7,6 +7,7 @@ syntax: regexp
 native/[\w\. ]*/[bB]uild/
 native/[\w\. ]*/[rR]elease/
 native/[\w\. ]*/[dD]ebug/
+native/[\w\. ]*/moc_\w*\.cpp$
 native/[\w\. ]*/Makefile$
 native/[\w\. ]*/Makefile.[dD]ebug$
 native/[\w\. ]*/Makefile.[rR]elease$
@@ -16,4 +17,4 @@ plugins/[\w\. ]*/[\w\. ]*\.dll$
 native/.*/.project$
 native/.*/.cproject$
 native/.*/[\w\. ]*\.pro\.user$
-native/.*/moc_.*
+native/.*/moc.*\.cpp$

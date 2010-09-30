@@ -43,6 +43,11 @@ public class WindowsDelegate implements IPlatformDelegate {
 	 * peek into SWT implementation details.
 	 */
 	public int getNativeId(Composite control) {
-		return control.handle;
+		// Using reflection so the code can be compiled on any platform
+		try {
+			return control.getClass().getField("handle").getInt(control);
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
 	}
 }

@@ -42,8 +42,13 @@ public final class CocoaDelegate implements IPlatformDelegate {
 	 * container and Qt objects. This code relies on reflection as it needs to
 	 * peek into SWT implementation details.
 	 */
-	@SuppressWarnings("restriction")
 	public int getNativeId(Composite control) {
-		return control.view.id;
+		// Using reflection so the code can be compiled on any platform
+		try {
+			final Object nsView = control.getClass().getField("view").get(control);
+			return nsView.getClass().getField("id").getInt(nsView);
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
 	}
 }

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Qt widgets embedding in SWT/Win32
-Bundle-SymbolicName: org.symbian.tools.eclipseqt.swt.win32
+Bundle-SymbolicName: org.symbian.tools.eclipseqt.swt.win32;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Symbian Foundation
 Fragment-Host: org.symbian.tools.eclipseqt.swt;bundle-version="1.0.0"
