@@ -1,9 +1,9 @@
-HEADERS = SWTQtContainer.h natives.h
-SOURCES = SWTQtContainer.cpp natives.cpp
+HEADERS += SWTQtContainer.h natives.h
+SOURCES += SWTQtContainer.cpp natives.cpp
 CONFIG += qt plugin
 QT += core gui webkit
-TEMPLATE = lib dll
-OBJECTS_DIR = Build
+TEMPLATE += lib dll
+OBJECTS_DIR += Build
 
 macx {
     QMAKE_EXTENSION_SHLIB = jnilib
@@ -20,8 +20,6 @@ win32 {
     }
     INCLUDEPATH += $$JNI_INCLUDE $$JNI_INCLUDE/win32"
     SOURCES += SWTQtContainer_win32.cpp
-    HEADERS += ../qtwinmigrate/QMfcApp ../qtwinmigrate/qmfcapp.h ../qtwinmigrate/QWinWidget ../qtwinmigrate/qwinwidget.h 
-    SOURCES += ../qtwinmigrate/qmfcapp.cpp ../qtwinmigrate/qwinwidget.cpp 
-    LIBS += -luser32
+    include("../qtwinmigrate/qtwinmigrate.pri")
     QMAKE_LFLAGS += -Wl,--kill-at -D_JNI_IMPLEMENTATION_
 }
