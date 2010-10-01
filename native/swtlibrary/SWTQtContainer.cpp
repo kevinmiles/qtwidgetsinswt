@@ -17,8 +17,17 @@
  */
 #include "SWTQtContainer.h"
 
-SWTQtContainer::SWTQtContainer(int handle, QWebViewDelegate *delegate) {
+SWTQWidget::SWTQWidget(int handle) {
 	panel = create(handle);
+}
+
+void SWTQWidget::resize(int x, int y, int w, int h) {
+	panel->resize(x, y, w, h);
+}
+
+SWTQWidget::~SWTQWebView() {}
+
+SWTQWebView::SWTQWebView(int handle, QWebViewDelegate *delegate) : SWTQWidget(handle) {
 	layout = new QStackedLayout;
 	QWidget *nativePane = panel->container();
 	nativePane->setLayout(layout);
@@ -36,62 +45,83 @@ SWTQtContainer::SWTQtContainer(int handle, QWebViewDelegate *delegate) {
 	QObject::connect(webView, SIGNAL(urlChanged(const QUrl&)), this, SLOT(urlChanged(const QUrl&)));
 }
 
-void SWTQtContainer::resize(int x, int y, int w, int h) {
-	panel->resize(x, y, w, h);
-}
-
-void SWTQtContainer::openUrl(const char* url) {
+void SWTQWebView::openUrl(const char* url) {
 	webView->load(QUrl(url));
 }
 
-SWTQtContainer::~SWTQtContainer() {
+SWTQWebView::~SWTQWebView() {
 	delete webView;
 	delete layout;
 	delete panel;
 }
 
-void SWTQtContainer::loadStarted() {
+void SWTQWebView::loadStarted() {
 	delegate->loadStarted(this);
 }
 
-void SWTQtContainer::loadProgress(int progress) {
+void SWTQWebView::loadProgress(int progress) {
 	delegate->loadProgress(this, progress);
 }
 
-void SWTQtContainer::loadFinished(bool ok) {
+void SWTQWebView::loadFinished(bool ok) {
 	delegate->loadFinished(this, ok);
 }
 
-void SWTQtContainer::urlChanged(const QUrl& url) {
+void SWTQWebView::urlChanged(const QUrl& url) {
 	QString sz = url.toString();
 	delegate->urlChanged(this, sz.toStdString().c_str());
 }
 
-void SWTQtContainer::back() {
+void SWTQWebView::back() {
 	webView->history()->back();
 }
 
-void SWTQtContainer::forward() {
+void SWTQWebView::forward() {
 	webView->history()->forward();
 }
 
-bool SWTQtContainer::canGoBack() {
+bool SWTQWebView::canGoBack() {
 	return webView->history()->canGoBack();
 }
 
-bool SWTQtContainer::canGoForward() {
+bool SWTQWebView::canGoForward() {
 	return webView->history()->canGoForward();
 }
 
-void SWTQtContainer::refresh() {
+void SWTQWebView::refresh() {
 	webView->reload();
 }
 
-void SWTQtContainer::stop() {
+void SWTQWebView::stop() {
 	webView->stop();
+}
+
+QWebView *SWTQWebView::qWebView() {
+	return webView;
 }
 
 QWebViewDelegate::~QWebViewDelegate() {
 }
 
 INativePanel::~INativePanel() {};
+
+SWTQWebInspector::SWTQWebInspector(int parentHandle) : SWTQWidget(parentHandle) {
+	layout = new QStackedLayout;
+	QWidget *nativePane = panel->container();
+	nativePane->setLayout(layout);
+	webInspector = new QWebInspector();
+	nativePane->move(0, 0);
+	layout->addWidget(webInspector);
+	layout->setCurrentWidget(webInspector);
+	nativePane->show();
+	webInspector->show();
+}
+
+void SWTQWebInspector::setBrowser(SWTQWebView *webViewWrapper) {
+	QWebView *webView = webViewWrapper->qWebView();
+	webView->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+	webInspector->setPage(webView->page());
+	webInspector->setVisible(true);
+}
+
+SWTQWebInspector::~SWTQWebInspector() {}

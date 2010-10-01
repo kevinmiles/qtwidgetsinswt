@@ -24,6 +24,7 @@
 #include <QWebView>
 #include <QWebHistory>
 #include <QStackedlayout>
+#include <QWebInspector>
 
 class INativePanel {
 public:
@@ -35,26 +36,35 @@ public:
 INativePanel* create(int parentHandle);
 void startQt();
 void tearDownQt();
-class SWTQtContainer;
+
+class SWTQWidget: public QObject {
+	Q_OBJECT;
+protected:
+	INativePanel *panel;
+public:
+	SWTQWidget(int parentHandle);
+	void resize(int x, int y, int w, int h);
+	virtual ~SWTQWidget();
+};
+
+class SWTQWebView;
 
 class QWebViewDelegate {
 public:
 	virtual ~QWebViewDelegate();
-	virtual void loadStarted(SWTQtContainer*) = 0;
-	virtual void loadProgress(SWTQtContainer*, int) = 0;
-	virtual void loadFinished(SWTQtContainer*, bool) = 0;
-	virtual void urlChanged(SWTQtContainer*, const char*) = 0;
+	virtual void loadStarted(SWTQWebView*) = 0;
+	virtual void loadProgress(SWTQWebView*, int) = 0;
+	virtual void loadFinished(SWTQWebView*, bool) = 0;
+	virtual void urlChanged(SWTQWebView*, const char*) = 0;
 };
 
-class SWTQtContainer: public QObject {
+class SWTQWebView: public SWTQWidget {
 	Q_OBJECT;
-	INativePanel *panel;
 	QWebView *webView;
 	QStackedLayout *layout;
 	QWebViewDelegate *delegate;
 public:
-	SWTQtContainer(int parentHandle, QWebViewDelegate*);
-	void resize(int x, int y, int w, int h);
+	SWTQWebView(int parentHandle, QWebViewDelegate*);
 	void openUrl(const char*);
 	void back();
 	void forward();
@@ -62,7 +72,8 @@ public:
 	bool canGoForward();
 	void stop();
 	void refresh();
-	virtual ~SWTQtContainer();
+	QWebView* qWebView();
+	virtual ~SWTQWebView();
 public slots:
 	void loadStarted();
 	void loadProgress(int);
@@ -70,4 +81,13 @@ public slots:
 	void urlChanged(const QUrl&);
 };
 
+class SWTQWebInspector: public SWTQWidget {
+	Q_OBJECT;
+	QWebInspector *webInspector;
+	QStackedLayout *layout;
+public:
+	SWTQWebInspector(int parentHandle);
+	void setBrowser(SWTQWebView *webView);
+	virtual ~SWTQWebInspector();
+};
 #endif //SWT_QT_CONTAINER

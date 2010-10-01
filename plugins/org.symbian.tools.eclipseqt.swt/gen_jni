@@ -1,1 +1,1 @@
-javah -classpath bin -o ../../native/swtlibrary/natives.h org.symbian.tools.eclipseqt.qwebview.SWTQWebView
+javah -classpath bin -o ../../native/swtlibrary/natives.h org.symbian.tools.eclipseqt.qwebview.SWTQWebView org.symbian.tools.eclipseqt.qwebview.QtControlWrapper org.symbian.tools.eclipseqt.qwebview.WebInspector

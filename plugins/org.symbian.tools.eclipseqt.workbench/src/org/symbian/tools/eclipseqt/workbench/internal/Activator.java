@@ -17,6 +17,8 @@
  */
 package org.symbian.tools.eclipseqt.workbench.internal;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -62,6 +64,10 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
+	}
+
+	public static void log(Exception e) {
+		getDefault().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, null, e));
 	}
 
 }

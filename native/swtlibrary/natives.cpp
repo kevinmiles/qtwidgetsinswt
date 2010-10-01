@@ -27,10 +27,10 @@ class JNIWebViewDelegate: public QWebViewDelegate {
 public:
 	JNIWebViewDelegate(jobject);
 	virtual ~JNIWebViewDelegate();
-	virtual void loadStarted(SWTQtContainer*);
-	virtual void loadProgress(SWTQtContainer*, int);
-	virtual void loadFinished(SWTQtContainer*, bool);
-	virtual void urlChanged(SWTQtContainer*, const char*);
+	virtual void loadStarted(SWTQWebView*);
+	virtual void loadProgress(SWTQWebView*, int);
+	virtual void loadFinished(SWTQWebView*, bool);
+	virtual void urlChanged(SWTQWebView*, const char*);
 };
 
 JNIWebViewDelegate::JNIWebViewDelegate(jobject delegate): delegateRef(delegate) {};
@@ -50,7 +50,7 @@ jmethodID getMethod(JNIEnv *env, jobject delegate, char *name, char *signature) 
 	return mID;
 }
 
-void JNIWebViewDelegate::loadProgress(SWTQtContainer* container, int progress) {
+void JNIWebViewDelegate::loadProgress(SWTQWebView* container, int progress) {
 	JNIEnv *env;
 	javaVM->GetEnv((void**) &env, JNI_VERSION_1_2);  // Note - threading may get complicated!
 	jmethodID method = getMethod(env, delegateRef, "browserLoadProgress", "(II)V");
@@ -58,7 +58,7 @@ void JNIWebViewDelegate::loadProgress(SWTQtContainer* container, int progress) {
 	env->CallVoidMethod(delegateRef, method, javaHandle, progress);
 }
 
-void JNIWebViewDelegate::loadFinished(SWTQtContainer* container, bool ok){
+void JNIWebViewDelegate::loadFinished(SWTQWebView* container, bool ok){
 	JNIEnv *env;
 	javaVM->GetEnv((void**) &env, JNI_VERSION_1_2);  // Note - threading may get complicated!
 	jmethodID method = getMethod(env, delegateRef, "browserLoadFinished", "(IZ)V");
@@ -66,7 +66,7 @@ void JNIWebViewDelegate::loadFinished(SWTQtContainer* container, bool ok){
 	env->CallVoidMethod(delegateRef, method, javaHandle, ok ? JNI_TRUE : JNI_FALSE);
 }
 
-void JNIWebViewDelegate::urlChanged(SWTQtContainer* container, const char* url) {
+void JNIWebViewDelegate::urlChanged(SWTQWebView* container, const char* url) {
 	JNIEnv *env;
 	javaVM->GetEnv((void**) &env, JNI_VERSION_1_2);  // Note - threading may get complicated!
 	jmethodID method = getMethod(env, delegateRef, "browserUrlChanged", "(ILjava/lang/String;)V");
@@ -88,7 +88,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *, void *)
 	tearDownQt();
 }
 
-void JNIWebViewDelegate::loadStarted(SWTQtContainer* container) {
+void JNIWebViewDelegate::loadStarted(SWTQWebView* container) {
 	JNIEnv *env;
 	javaVM->GetEnv((void**) &env, JNI_VERSION_1_2);  // Note - threading may get complicated!
 	jmethodID method = getMethod(env, delegateRef, "browserLoadStarted", "(I)V");
@@ -96,11 +96,11 @@ void JNIWebViewDelegate::loadStarted(SWTQtContainer* container) {
 	env->CallVoidMethod(delegateRef, method, javaHandle);
 }
 
-JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1resize
+JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_QtControlWrapper_qt_1resize
 (JNIEnv * env, jobject obj, jint handle, jint x, jint y, jint w, jint h) {
 	Q_UNUSED(env);
 	Q_UNUSED(obj);
-	SWTQtContainer *container = reinterpret_cast<SWTQtContainer*> (handle);
+	SWTQWidget *container = reinterpret_cast<SWTQWidget*> (handle);
 	container->resize(x, y, w, h);
 }
 
@@ -109,11 +109,11 @@ JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_
  * Method:    disposeQt
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1dispose
+JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_QtControlWrapper_qt_1dispose
 (JNIEnv * env, jobject obj, jint handle) {
 	Q_UNUSED(env);
 	Q_UNUSED(obj);
-	SWTQtContainer *container = reinterpret_cast<SWTQtContainer*> (handle);
+	SWTQWidget *container = reinterpret_cast<SWTQWidget*> (handle);
 	delete container;
 }
 
@@ -121,7 +121,7 @@ JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_
 (JNIEnv *env, jobject obj, jint handle, jstring url) {
 	Q_UNUSED(obj);
 	const char* curl = env->GetStringUTFChars(url, NULL);
-	SWTQtContainer *container = reinterpret_cast<SWTQtContainer*> (handle);
+	SWTQWebView *container = reinterpret_cast<SWTQWebView*> (handle);
 	container->openUrl(curl);
 }
 
@@ -130,12 +130,12 @@ JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_
  * Method:    createChild
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1createChild
+JNIEXPORT jint JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1createWebView
 (JNIEnv * env, jobject obj, jint handle, jobject delegate) {
 	Q_UNUSED(env);
 	Q_UNUSED(obj);
 	jobject delegateRef = env->NewGlobalRef(delegate);
-	return reinterpret_cast<jint> (new SWTQtContainer(handle, new JNIWebViewDelegate(delegateRef)));
+	return reinterpret_cast<jint> (new SWTQWebView(handle, new JNIWebViewDelegate(delegateRef)));
 }
 
 /*
@@ -145,7 +145,7 @@ JNIEXPORT jint JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_
  */
 JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1back
 (JNIEnv*, jobject, jint handle) {
-	SWTQtContainer *container = reinterpret_cast<SWTQtContainer*> (handle);
+	SWTQWebView *container = reinterpret_cast<SWTQWebView*> (handle);
 	container->back();
 }
 
@@ -156,7 +156,7 @@ JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_
  */
 JNIEXPORT jboolean JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1canGoBack
 (JNIEnv*, jobject, jint handle) {
-	SWTQtContainer *container = reinterpret_cast<SWTQtContainer*> (handle);
+	SWTQWebView *container = reinterpret_cast<SWTQWebView*> (handle);
 	return container->canGoBack() ? JNI_TRUE : JNI_FALSE;
 }
 
@@ -167,7 +167,7 @@ JNIEXPORT jboolean JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView
  */
 JNIEXPORT jboolean JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1canGoForward
 (JNIEnv*, jobject, jint handle) {
-	SWTQtContainer *container = reinterpret_cast<SWTQtContainer*> (handle);
+	SWTQWebView *container = reinterpret_cast<SWTQWebView*> (handle);
 	return container->canGoForward() ? JNI_TRUE : JNI_FALSE;
 }
 
@@ -178,7 +178,7 @@ JNIEXPORT jboolean JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView
  */
 JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1forward
 (JNIEnv*, jobject, jint handle) {
-	SWTQtContainer *container = reinterpret_cast<SWTQtContainer*> (handle);
+	SWTQWebView *container = reinterpret_cast<SWTQWebView*> (handle);
 	container->forward();
 }
 
@@ -189,7 +189,7 @@ JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_
  */
 JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1stop
 (JNIEnv *, jobject, jint handle) {
-	SWTQtContainer *container = reinterpret_cast<SWTQtContainer*> (handle);
+	SWTQWebView *container = reinterpret_cast<SWTQWebView*> (handle);
 	container->stop();
 }
 
@@ -200,6 +200,18 @@ JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_
  */
 JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1refresh
 (JNIEnv *, jobject, jint handle) {
-	SWTQtContainer *container = reinterpret_cast<SWTQtContainer*> (handle);
+	SWTQWebView *container = reinterpret_cast<SWTQWebView*> (handle);
 	container->refresh();
+}
+
+JNIEXPORT jint JNICALL Java_org_symbian_tools_eclipseqt_qwebview_WebInspector_qt_1createWebInspector
+(JNIEnv *, jobject, jint parentHandle, jobject) {
+	return reinterpret_cast<jint> (new SWTQWebInspector(parentHandle));
+}
+
+JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_WebInspector_qt_1setBrowser
+(JNIEnv *, jobject, jint inspector, jint browser) {
+	SWTQWebInspector *insp = reinterpret_cast<SWTQWebInspector*> (inspector);
+	SWTQWebView *webView = reinterpret_cast<SWTQWebView*> (browser);
+	insp->setBrowser(webView);
 }

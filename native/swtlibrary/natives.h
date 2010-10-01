@@ -33,19 +33,11 @@ JNIEXPORT jboolean JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView
 
 /*
  * Class:     org_symbian_tools_eclipseqt_qwebview_SWTQWebView
- * Method:    qt_createChild
- * Signature: (ILorg/symbian/tools/eclipseqt/qwebview/Delegate;)I
+ * Method:    qt_createWebView
+ * Signature: (ILorg/symbian/tools/eclipseqt/qwebview/BrowserDelegate;)I
  */
-JNIEXPORT jint JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1createChild
+JNIEXPORT jint JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1createWebView
   (JNIEnv *, jobject, jint, jobject);
-
-/*
- * Class:     org_symbian_tools_eclipseqt_qwebview_SWTQWebView
- * Method:    qt_dispose
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1dispose
-  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     org_symbian_tools_eclipseqt_qwebview_SWTQWebView
@@ -65,14 +57,6 @@ JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_
 
 /*
  * Class:     org_symbian_tools_eclipseqt_qwebview_SWTQWebView
- * Method:    qt_resize
- * Signature: (IIIII)V
- */
-JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1resize
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint);
-
-/*
- * Class:     org_symbian_tools_eclipseqt_qwebview_SWTQWebView
  * Method:    qt_setUrl
  * Signature: (ILjava/lang/String;)V
  */
@@ -86,6 +70,60 @@ JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_
  */
 JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1stop
   (JNIEnv *, jobject, jint);
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+/* Header for class org_symbian_tools_eclipseqt_qwebview_QtControlWrapper */
+
+#ifndef _Included_org_symbian_tools_eclipseqt_qwebview_QtControlWrapper
+#define _Included_org_symbian_tools_eclipseqt_qwebview_QtControlWrapper
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*
+ * Class:     org_symbian_tools_eclipseqt_qwebview_QtControlWrapper
+ * Method:    qt_dispose
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_QtControlWrapper_qt_1dispose
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     org_symbian_tools_eclipseqt_qwebview_QtControlWrapper
+ * Method:    qt_resize
+ * Signature: (IIIII)V
+ */
+JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_QtControlWrapper_qt_1resize
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint);
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+/* Header for class org_symbian_tools_eclipseqt_qwebview_WebInspector */
+
+#ifndef _Included_org_symbian_tools_eclipseqt_qwebview_WebInspector
+#define _Included_org_symbian_tools_eclipseqt_qwebview_WebInspector
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*
+ * Class:     org_symbian_tools_eclipseqt_qwebview_WebInspector
+ * Method:    qt_setBrowser
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_WebInspector_qt_1setBrowser
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     org_symbian_tools_eclipseqt_qwebview_WebInspector
+ * Method:    qt_createWebInspector
+ * Signature: (ILorg/symbian/tools/eclipseqt/qwebview/QtDelegate;)I
+ */
+JNIEXPORT jint JNICALL Java_org_symbian_tools_eclipseqt_qwebview_WebInspector_qt_1createWebInspector
+  (JNIEnv *, jobject, jint, jobject);
 
 #ifdef __cplusplus
 }

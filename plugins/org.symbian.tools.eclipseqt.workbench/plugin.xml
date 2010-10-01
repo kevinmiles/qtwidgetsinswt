@@ -42,6 +42,14 @@
             name="Qt WebKit Browser"
             restorable="true">
       </view>
+      <view
+            category="org.symbian.tools.eclipseqt.workbench.qtviews"
+            class="org.symbian.tools.eclipseqt.workbench.browser.WebInspectorView"
+            icon="icons/obj16/browser.gif"
+            id="org.symbian.tools.eclipseqt.workbench.inspector"
+            name="Web Inspector"
+            restorable="true">
+      </view>
    </extension>
 
 </plugin>

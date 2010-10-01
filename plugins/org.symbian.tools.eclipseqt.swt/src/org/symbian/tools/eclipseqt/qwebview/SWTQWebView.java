@@ -20,16 +20,10 @@ package org.symbian.tools.eclipseqt.qwebview;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.symbian.tools.eclipseqt.internal.SWT_Qt;
 
@@ -41,31 +35,14 @@ import org.symbian.tools.eclipseqt.internal.SWT_Qt;
  * 
  * @author Eugene Ostroukhov
  */
-public class SWTQWebView extends Composite {
-	static {
-		SWT_Qt.verifyRunning();
-	}
-
+public class SWTQWebView extends QtControlWrapper {
 	private final Collection<LocationListener> locationListeners = new LinkedList<LocationListener>();
 	private final Collection<ProgressListener> progressListeners = new LinkedList<ProgressListener>();
-	private final int qtpointer;
 	private String url;
 
 	public SWTQWebView(Composite parent, int style) {
-		super(parent, style | SWT.EMBEDDED);
-		super.setBackground(getDisplay().getSystemColor(SWT.COLOR_GREEN));
-		qtpointer = qt_createChild(SWT_Qt.getNativeId(this), new Delegate(this));
-		addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
-				qt_dispose(qtpointer);
-			}
-		});
-		addControlListener(new ControlAdapter() {
-			@Override
-			public void controlResized(ControlEvent e) {
-				resize(e);
-			}
-		});
+		super(parent, style);
+		qtpointer = qt_createWebView(SWT_Qt.getNativeId(this), new BrowserDelegate(this));
 	}
 
 	public void addLocationListener(LocationListener locationListener) {
@@ -158,16 +135,11 @@ public class SWTQWebView extends Composite {
 
 	private native boolean qt_canGoForward(int qtpointer);
 
-	private native int qt_createChild(int parentHandle, Delegate delegate);
-
-	private native void qt_dispose(int qtpointer);
+	private native int qt_createWebView(int parentHandle, BrowserDelegate delegate);
 
 	private native void qt_forward(int qtpointer);
 
 	private native void qt_refresh(int qtpointer);
-
-	private native void qt_resize(int qtpointer, int x, int y, int width,
-			int height);
 
 	private final native void qt_setUrl(int qtpointer, String url);
 
@@ -186,13 +158,6 @@ public class SWTQWebView extends Composite {
 	public synchronized void removeProgressListener(ProgressListener listener) {
 		checkWidget();
 		progressListeners.remove(listener);
-	}
-
-	protected void resize(ControlEvent e) {
-		checkWidget();
-		final Rectangle clientArea = getBounds();// getClientArea();
-		qt_resize(qtpointer, clientArea.x, clientArea.y, clientArea.width,
-				clientArea.height);
 	}
 
 	public void setUrl(String url) {
