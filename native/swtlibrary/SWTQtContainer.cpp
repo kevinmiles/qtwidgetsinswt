@@ -121,7 +121,11 @@ void SWTQWebInspector::setBrowser(SWTQWebView *webViewWrapper) {
 	QWebView *webView = webViewWrapper->qWebView();
 	webView->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
 	webInspector->setPage(webView->page());
-	webInspector->setVisible(true);
+	webInspector->show();
+	webView->page()->triggerAction(QWebPage::SelectAll);
+	webView->page()->triggerAction(QWebPage::InspectElement);
 }
 
-SWTQWebInspector::~SWTQWebInspector() {}
+SWTQWebInspector::~SWTQWebInspector() {
+	delete webInspector;
+}

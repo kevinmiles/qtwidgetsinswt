@@ -40,6 +40,7 @@ public:
 void startQt() {
 	qt_mac_set_native_menubar(false);
 	QApplication::setAttribute(Qt::AA_MacPluginApplication);
+	QApplication::setAttribute(Qt::AA_DontUseNativeMenuBar);
 	int argc = 0;
 	app = new QApplication(argc, 0);
 }

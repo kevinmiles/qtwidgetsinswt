@@ -90,7 +90,7 @@ public abstract class QtBasedBrowserPane {
 		manager.add(new ForwardAction(browser));
 		manager.add(new Separator());
 		manager.add(new StopRefreshAction(browser));
-		manager.add(new InspectAction(browser));
+//		manager.add(new InspectAction(browser));
 		manager.update(true);
 
 		root.setLayout(new FormLayout());

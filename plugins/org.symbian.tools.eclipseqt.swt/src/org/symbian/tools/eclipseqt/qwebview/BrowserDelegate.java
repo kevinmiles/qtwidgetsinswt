@@ -23,17 +23,17 @@ package org.symbian.tools.eclipseqt.qwebview;
  * 
  * @author Eugene Ostroukhov
  */
-final class Delegate {
+final class BrowserDelegate {
 	private final SWTQWebView webView;
 
-	Delegate(SWTQWebView swtqWebView) {
+	BrowserDelegate(SWTQWebView swtqWebView) {
 		webView = swtqWebView;
 	}
 
 	public void browserLoadFinished(final int browserId, final boolean ok) {
 		webView.invokeLater(new Runnable() {
 			public void run() {
-				Delegate.this.webView.notifyLoadFinished(browserId, ok);
+				BrowserDelegate.this.webView.notifyLoadFinished(browserId, ok);
 			}
 		});
 	}
@@ -41,7 +41,7 @@ final class Delegate {
 	public void browserLoadProgress(final int browserId, final int progress) {
 		webView.invokeLater(new Runnable() {
 			public void run() {
-				Delegate.this.webView.notifyLoadProgress(browserId, progress);
+				BrowserDelegate.this.webView.notifyLoadProgress(browserId, progress);
 			}
 		});
 	}
@@ -49,7 +49,7 @@ final class Delegate {
 	public void browserLoadStarted(final int browserId) {
 		webView.invokeLater(new Runnable() {
 			public void run() {
-				Delegate.this.webView.notifyLoadStarted(browserId);
+				BrowserDelegate.this.webView.notifyLoadStarted(browserId);
 			}
 		});
 	}
@@ -58,7 +58,7 @@ final class Delegate {
 		webView.innerSetUrl(url);
 		webView.invokeLater(new Runnable() {
 			public void run() {
-				Delegate.this.webView.notifyUrlChanged(browserId, url);
+				BrowserDelegate.this.webView.notifyUrlChanged(browserId, url);
 			}
 		});
 	}
