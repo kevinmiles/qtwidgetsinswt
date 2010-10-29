@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'SWTQtContainer.h'
 **
-** Created: Thu Sep 30 16:59:29 2010
+** Created: Fri Oct 29 11:31:21 2010
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -72,7 +72,7 @@ static const uint qt_meta_data_SWTQWebView[] = {
        5,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -84,6 +84,7 @@ static const uint qt_meta_data_SWTQWebView[] = {
       27,   12,   12,   12, 0x0a,
       45,   12,   12,   12, 0x0a,
       64,   12,   12,   12, 0x0a,
+      87,   81,   12,   12, 0x0a,
 
        0        // eod
 };
@@ -91,6 +92,7 @@ static const uint qt_meta_data_SWTQWebView[] = {
 static const char qt_meta_stringdata_SWTQWebView[] = {
     "SWTQWebView\0\0loadStarted()\0loadProgress(int)\0"
     "loadFinished(bool)\0urlChanged(QUrl)\0"
+    "title\0titleChanged(QString)\0"
 };
 
 const QMetaObject SWTQWebView::staticMetaObject = {
@@ -126,9 +128,10 @@ int SWTQWebView::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 1: loadProgress((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 2: loadFinished((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 3: urlChanged((*reinterpret_cast< const QUrl(*)>(_a[1]))); break;
+        case 4: titleChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         default: ;
         }
-        _id -= 4;
+        _id -= 5;
     }
     return _id;
 }

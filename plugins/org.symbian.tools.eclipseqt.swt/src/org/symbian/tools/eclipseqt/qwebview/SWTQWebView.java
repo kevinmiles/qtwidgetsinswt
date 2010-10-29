@@ -17,6 +17,7 @@
  */
 package org.symbian.tools.eclipseqt.qwebview;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -24,6 +25,9 @@ import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
+import org.eclipse.swt.browser.TitleEvent;
+import org.eclipse.swt.browser.TitleListener;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
 import org.symbian.tools.eclipseqt.internal.SWT_Qt;
 
@@ -38,11 +42,14 @@ import org.symbian.tools.eclipseqt.internal.SWT_Qt;
 public class SWTQWebView extends QtControlWrapper {
 	private final Collection<LocationListener> locationListeners = new LinkedList<LocationListener>();
 	private final Collection<ProgressListener> progressListeners = new LinkedList<ProgressListener>();
+	private final Collection<TitleListener> titleListeners = new LinkedList<TitleListener>();
 	private String url;
+	private String title = "";
 
 	public SWTQWebView(Composite parent, int style) {
 		super(parent, style);
-		qtpointer = qt_createWebView(SWT_Qt.getNativeId(this), new BrowserDelegate(this));
+		qtpointer = qt_createWebView(SWT_Qt.getNativeId(this),
+				new BrowserDelegate(this));
 	}
 
 	public void addLocationListener(LocationListener locationListener) {
@@ -53,6 +60,11 @@ public class SWTQWebView extends QtControlWrapper {
 	public synchronized void addProgressListener(ProgressListener listener) {
 		checkWidget();
 		progressListeners.add(listener);
+	}
+
+	public synchronized void addTitleListener(TitleListener listener) {
+		checkWidget();
+		titleListeners.add(listener);
 	}
 
 	public boolean back() {
@@ -135,15 +147,20 @@ public class SWTQWebView extends QtControlWrapper {
 
 	private native boolean qt_canGoForward(int qtpointer);
 
-	private native int qt_createWebView(int parentHandle, BrowserDelegate delegate);
+	private native int qt_createWebView(int parentHandle,
+			BrowserDelegate delegate);
 
 	private native void qt_forward(int qtpointer);
 
 	private native void qt_refresh(int qtpointer);
 
-	private final native void qt_setUrl(int qtpointer, String url);
+	private native void qt_setIconsDbPath(int qtpointer, String path);
+
+	private native void qt_setUrl(int qtpointer, String url);
 
 	private native void qt_stop(int qtpointer);
+
+	private native byte[] qt_getIcon(int qtpointer, int[] whbp);
 
 	public void refresh() {
 		checkWidget();
@@ -160,6 +177,20 @@ public class SWTQWebView extends QtControlWrapper {
 		progressListeners.remove(listener);
 	}
 
+	/**
+	 * Note that the browser will not download the icons until a valid path is
+	 * supplied. This path should point to a writable directory (i.e. somewhere
+	 * in the plug-in state location).
+	 */
+	public void setIconsDatabasePath(String path) {
+		checkWidget();
+		final File f = new File(path);
+		if (!f.exists()) {
+			f.mkdirs();
+		}
+		qt_setIconsDbPath(qtpointer, path);
+	}
+
 	public void setUrl(String url) {
 		checkWidget();
 		this.url = url;
@@ -169,6 +200,38 @@ public class SWTQWebView extends QtControlWrapper {
 	public void stop() {
 		checkWidget();
 		qt_stop(qtpointer);
+	}
+
+	public synchronized void removeTitleListener(TitleListener listener) {
+		checkWidget();
+		titleListeners.remove(listener);
+	}
+
+	public String getTitle() {
+		return title;
+	}
+	
+	public ImageData getIcon() {
+		final int[] whbp = new int[3];
+		final byte[] data = qt_getIcon(qtpointer, whbp);
+		if (data != null && data.length > 0) {
+			return SWT_Qt.qtImageToSwt(whbp[0], whbp[1], whbp[2], data);
+		} else {
+			return null;
+		}
+	}
+
+	public void innerSetTitle(String title) {
+		this.title = title;
+	}
+
+	public void notifyTitleChanged(int browserId, String title) {
+		final TitleEvent event = new TitleEvent(this);
+		event.title = title;
+		
+		for (TitleListener listener : titleListeners) {
+			listener.changed(event);
+		}
 	}
 
 }

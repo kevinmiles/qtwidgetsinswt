@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -36,13 +38,16 @@ public class SWT_Qt {
 
 	private static synchronized IPlatformDelegate getDelegate() {
 		if (delegate == null) {
-			InputStream stream = SWT_Qt.class.getClassLoader()
-					.getResourceAsStream("/org/symbian/tools/eclipseqt/internal/platform.properties");
+			InputStream stream = SWT_Qt.class
+					.getClassLoader()
+					.getResourceAsStream(
+							"/org/symbian/tools/eclipseqt/internal/platform.properties");
 			if (stream != null) {
 				try {
 					Properties props = new Properties();
 					props.load(stream);
-					delegate = (IPlatformDelegate) Class.forName(props.getProperty("delegate.class")).newInstance();
+					delegate = (IPlatformDelegate) Class.forName(
+							props.getProperty("delegate.class")).newInstance();
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
@@ -68,6 +73,24 @@ public class SWT_Qt {
 			}
 		}
 		return delegate;
+	}
+
+	public static ImageData qtImageToSwt(final int w, final int h,
+			final int bpp, final byte[] data) {
+		if (data != null) {
+			final ImageData imageData = new ImageData(w, h, bpp,
+					new PaletteData(0xFF00, 0xFF0000, 0xFF000000), 8, data);
+			if (bpp == 32) {
+				byte[] alpha = new byte[w * h];
+				for (int i = 0; i < alpha.length; i++) {
+					alpha[i] = data[((i + 1) * 4) - 1];
+				}
+				imageData.setAlphas(0, 0, w * h, alpha, 0);
+			}
+			return imageData;
+		} else {
+			return null;
+		}
 	}
 
 	public static synchronized void verifyRunning() {

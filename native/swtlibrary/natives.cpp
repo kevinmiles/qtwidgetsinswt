@@ -31,6 +31,7 @@ public:
 	virtual void loadProgress(SWTQWebView*, int);
 	virtual void loadFinished(SWTQWebView*, bool);
 	virtual void urlChanged(SWTQWebView*, const char*);
+    virtual void titleChanged(SWTQWidget*, const char*);
 };
 
 JNIWebViewDelegate::JNIWebViewDelegate(jobject delegate): delegateRef(delegate) {};
@@ -72,6 +73,15 @@ void JNIWebViewDelegate::urlChanged(SWTQWebView* container, const char* url) {
 	jmethodID method = getMethod(env, delegateRef, "browserUrlChanged", "(ILjava/lang/String;)V");
 	jint javaHandle = reinterpret_cast<jint> (container);
 	jstring str = env->NewStringUTF(url);
+	env->CallVoidMethod(delegateRef, method, javaHandle, str);
+}
+
+void JNIWebViewDelegate::titleChanged(SWTQWidget* container, const char* title) {
+	JNIEnv *env;
+	javaVM->GetEnv((void**) &env, JNI_VERSION_1_2);  // Note - threading may get complicated!
+	jmethodID method = getMethod(env, delegateRef, "browserTitleChanged", "(ILjava/lang/String;)V");
+	jint javaHandle = reinterpret_cast<jint> (container);
+	jstring str = env->NewStringUTF(title);
 	env->CallVoidMethod(delegateRef, method, javaHandle, str);
 }
 
@@ -214,4 +224,26 @@ JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_WebInspector_qt
 	SWTQWebInspector *insp = reinterpret_cast<SWTQWebInspector*> (inspector);
 	SWTQWebView *webView = reinterpret_cast<SWTQWebView*> (browser);
 	insp->setBrowser(webView);
+}
+
+JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1setIconsDbPath
+(JNIEnv *env, jobject, jint handle, jstring path) {
+	SWTQWebView *container = reinterpret_cast<SWTQWebView*> (handle);
+	jboolean iscopy;
+    const char *sz = env->GetStringUTFChars(path, &iscopy);
+	container->setIconsDbPath(sz);
+    env->ReleaseStringUTFChars(path, sz);
+}
+
+JNIEXPORT jbyteArray JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1getIcon
+(JNIEnv *env, jobject, jint handle, jintArray whbpp) {
+	SWTQWebView *container = reinterpret_cast<SWTQWebView*> (handle);
+    int arrayLength = 0;
+    int vals[3];
+    unsigned char* array = container->getImageData(vals, vals + 1, vals + 2, &arrayLength);
+    env->SetIntArrayRegion(whbpp, 0, 3, (const jint*) vals);
+    jbyteArray byteArray = env->NewByteArray(arrayLength);
+    env->SetByteArrayRegion(byteArray, 0, arrayLength, (const jbyte*) array);
+    free(array);
+    return byteArray;
 }

@@ -43,6 +43,30 @@ SWTQWebView::SWTQWebView(int handle, QWebViewDelegate *delegate) : SWTQWidget(ha
 	QObject::connect(webView, SIGNAL(loadProgress(int)), this, SLOT(loadProgress(int)));
 	QObject::connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 	QObject::connect(webView, SIGNAL(urlChanged(const QUrl&)), this, SLOT(urlChanged(const QUrl&)));
+	QObject::connect(webView, SIGNAL(titleChanged(const QString&)), this, SLOT(titleChanged(const QString&)));
+	// void titleChanged(const QString & title)
+}
+
+unsigned char* SWTQWebView::getImageData(int* w, int* h, int* bpp, int* arrayLength) {
+    const QIcon& icon = webView->icon();
+    const QPixmap& pixmap = icon.pixmap(16, 16);
+    if (pixmap.isNull()) {
+        return NULL;
+    } else {
+        const QImage& image = pixmap.toImage();
+        *w = image.width();
+        *h = image.height();
+        *bpp = image.depth();
+        *arrayLength = *w * *h * *bpp / 8;
+        unsigned char* buffer = (unsigned char*) malloc(*arrayLength);
+        memcpy(buffer, image.constBits(), *arrayLength);
+        return buffer;
+    }
+}
+
+void SWTQWebView::titleChanged(const QString & title) {
+    const std::string stdString = title.toStdString();
+    delegate->titleChanged(this, stdString.c_str());
 }
 
 void SWTQWebView::openUrl(const char* url) {
@@ -96,6 +120,10 @@ void SWTQWebView::stop() {
 	webView->stop();
 }
 
+void SWTQWebView::setIconsDbPath(const char* sz) {
+	webView->settings()->setIconDatabasePath(sz);
+}
+
 QWebView *SWTQWebView::qWebView() {
 	return webView;
 }
@@ -121,11 +149,9 @@ void SWTQWebInspector::setBrowser(SWTQWebView *webViewWrapper) {
 	QWebView *webView = webViewWrapper->qWebView();
 	webView->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
 	webInspector->setPage(webView->page());
-	webInspector->show();
-	webView->page()->triggerAction(QWebPage::SelectAll);
-	webView->page()->triggerAction(QWebPage::InspectElement);
+// See https://bugs.webkit.org/show_bug.cgi?id=47203
+//	QWebPage *page = webView->page();
+//	page->inspect(page->mainFrame()->documentElement()); 
 }
 
-SWTQWebInspector::~SWTQWebInspector() {
-	delete webInspector;
-}
+SWTQWebInspector::~SWTQWebInspector() {}

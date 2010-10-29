@@ -26,10 +26,17 @@ import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
+import org.eclipse.swt.browser.TitleEvent;
+import org.eclipse.swt.browser.TitleListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -40,6 +47,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.symbian.tools.eclipseqt.qwebview.SWTQWebView;
+import org.symbian.tools.eclipseqt.workbench.internal.Activator;
 
 /**
  * This is a web browser pane that may be embedded into editors, views, wizards,
@@ -58,7 +66,13 @@ public abstract class QtBasedBrowserPane {
 	private boolean trackingProgress = false;
 
 	protected void browse() {
-		browser.setUrl(location.getText());
+		String text = location.getText();
+		if (text.length() > 0
+				&& !(text.startsWith("/") || text.startsWith("http:/") || text
+						.startsWith("file:/"))) {
+			text = "http://" + text;
+		}
+		browser.setUrl(text);
 	}
 
 	/**
@@ -74,23 +88,35 @@ public abstract class QtBasedBrowserPane {
 		panel.setLayout(gridLayout);
 		ToolBar bar = new ToolBar(panel, SWT.NONE);
 		location = new Text(panel, SWT.BORDER);
-		Button browse = new Button(panel, SWT.NONE);
+		location.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				browse();
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				browse();
+			}
+		});
+		browseButton = new Button(panel, SWT.NONE);
 		location.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		browse.setText("Go");
-		browse.addSelectionListener(new SelectionAdapter() {
+		browseButton.setText("Go");
+		browseButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				browse();
 			}
 		});
 		browser = new SWTQWebView(root, SWT.NONE);
+		browser.setIconsDatabasePath(Activator.getDefault().getStateLocation()
+				.append("icons").toOSString());
 
 		ToolBarManager manager = new ToolBarManager(bar);
 		manager.add(new BackAction(browser));
 		manager.add(new ForwardAction(browser));
 		manager.add(new Separator());
 		manager.add(new StopRefreshAction(browser));
-//		manager.add(new InspectAction(browser));
+		// manager.add(new InspectAction(browser));
 		manager.update(true);
 
 		root.setLayout(new FormLayout());
@@ -127,17 +153,45 @@ public abstract class QtBasedBrowserPane {
 		browser.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				System.out.println(e.keyCode);
+				// System.out.println(e.keyCode);
+			}
+		});
+		browser.addTitleListener(new TitleListener() {
+			public void changed(TitleEvent event) {
+				setTitle(event.title);
 			}
 		});
 		browser.setUrl("http://symbian.org");
 		location.setText(browser.getUrl());
 	}
 
+	private Image image = null;
+	private Button browseButton;
+
+	protected void setImage(Image image) {
+		// Subclasses may override
+	}
+
+	protected void setTitle(String title) {
+		// Subclasses may override
+	}
+
 	protected void downloadDone() {
 		if (trackingProgress) {
 			getStatusLineManager().getProgressMonitor().done();
 			trackingProgress = false;
+			final ImageData icon = browser.getIcon();
+			final Image n;
+			if (icon == null) {
+				n = null;
+			} else {
+				n = new Image(browser.getDisplay(), icon);
+			}
+			setImage(n);
+			if (image != null) {
+				image.dispose();
+			}
+			image = n;
 		}
 	}
 
@@ -169,6 +223,10 @@ public abstract class QtBasedBrowserPane {
 
 	public void openUrl(String url) {
 		browser.setUrl(url);
+	}
+
+	public SWTQWebView getBrowser() {
+		return browser;
 	}
 
 }

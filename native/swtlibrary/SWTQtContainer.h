@@ -18,13 +18,15 @@
 #ifndef SWT_QT_CONTAINER
 #define SWT_QT_CONTAINER
 
-#include <QWidget>
-#include <QPushButton>
 #include <QApplication>
-#include <QWebView>
-#include <QWebHistory>
+#include <QPushButton>
 #include <QStackedlayout>
 #include <QWebInspector>
+#include <QWebFrame>
+#include <QWebElement>
+#include <QWebHistory>
+#include <QWebView>
+#include <QWidget>
 
 class INativePanel {
 public:
@@ -56,6 +58,7 @@ public:
 	virtual void loadProgress(SWTQWebView*, int) = 0;
 	virtual void loadFinished(SWTQWebView*, bool) = 0;
 	virtual void urlChanged(SWTQWebView*, const char*) = 0;
+    virtual void titleChanged(SWTQWidget*, const char*) = 0;
 };
 
 class SWTQWebView: public SWTQWidget {
@@ -72,13 +75,16 @@ public:
 	bool canGoForward();
 	void stop();
 	void refresh();
+    unsigned char* getImageData(int* w, int* h, int* bpp, int* arrayLength);
 	QWebView* qWebView();
+	void setIconsDbPath(const char*);
 	virtual ~SWTQWebView();
 public slots:
 	void loadStarted();
 	void loadProgress(int);
 	void loadFinished(bool);
 	void urlChanged(const QUrl&);
+	void titleChanged(const QString & title);
 };
 
 class SWTQWebInspector: public SWTQWidget {

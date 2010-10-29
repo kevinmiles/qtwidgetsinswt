@@ -57,6 +57,14 @@ JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_
 
 /*
  * Class:     org_symbian_tools_eclipseqt_qwebview_SWTQWebView
+ * Method:    qt_setIconsDbPath
+ * Signature: (ILjava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1setIconsDbPath
+  (JNIEnv *, jobject, jint, jstring);
+
+/*
+ * Class:     org_symbian_tools_eclipseqt_qwebview_SWTQWebView
  * Method:    qt_setUrl
  * Signature: (ILjava/lang/String;)V
  */
@@ -70,6 +78,14 @@ JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_
  */
 JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1stop
   (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     org_symbian_tools_eclipseqt_qwebview_SWTQWebView
+ * Method:    qt_getIcon
+ * Signature: (I[I)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_org_symbian_tools_eclipseqt_qwebview_SWTQWebView_qt_1getIcon
+  (JNIEnv *, jobject, jint, jintArray);
 
 #ifdef __cplusplus
 }
@@ -112,7 +128,7 @@ extern "C" {
 /*
  * Class:     org_symbian_tools_eclipseqt_qwebview_WebInspector
  * Method:    qt_setBrowser
- * Signature: (I)V
+ * Signature: (II)V
  */
 JNIEXPORT void JNICALL Java_org_symbian_tools_eclipseqt_qwebview_WebInspector_qt_1setBrowser
   (JNIEnv *, jobject, jint, jint);

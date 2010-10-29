@@ -46,10 +46,16 @@ public class QtBasedBrowser extends EditorPart implements IWebBrowser,
 	@Override
 	public void createPartControl(Composite parent) {
 		browserPane = new QtBasedBrowserPane() {
-
 			@Override
 			protected IStatusLineManager getStatusLineManager() {
 				return getEditorSite().getActionBars().getStatusLineManager();
+			}
+
+			protected void setImage(org.eclipse.swt.graphics.Image image) {
+				setTitleImage(image);
+				setTitleToolTip(getBrowser().getUrl());
+				String title = getBrowser().getTitle();
+				setPartName(title != null ? title : getBrowser().getUrl());
 			}
 		};
 		browserPane.createPartControl(parent);

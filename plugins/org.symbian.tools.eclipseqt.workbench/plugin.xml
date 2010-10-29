@@ -50,8 +50,7 @@
             id="org.symbian.tools.eclipseqt.workbench.inspector"
             name="Web Inspector"
             restorable="true">
-      </view>
--->
+      </view>-->
    </extension>
 
 </plugin>

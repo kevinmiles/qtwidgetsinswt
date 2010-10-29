@@ -18,8 +18,8 @@
 package org.symbian.tools.eclipseqt.qwebview;
 
 /**
- * This object methods will be triggered on the native side to send events
- * to Java side.
+ * This object methods will be triggered on the native side to send events to
+ * Java side.
  * 
  * @author Eugene Ostroukhov
  */
@@ -41,7 +41,8 @@ final class BrowserDelegate {
 	public void browserLoadProgress(final int browserId, final int progress) {
 		webView.invokeLater(new Runnable() {
 			public void run() {
-				BrowserDelegate.this.webView.notifyLoadProgress(browserId, progress);
+				BrowserDelegate.this.webView.notifyLoadProgress(browserId,
+						progress);
 			}
 		});
 	}
@@ -54,7 +55,13 @@ final class BrowserDelegate {
 		});
 	}
 
-	public void browserUrlChanged(final int browserId, final String url) {
+	public void browserUrlChanged(final int browserId, final String browserUrl) {
+		final String url;
+		if (browserUrl != null && browserUrl.length() == 0) {
+			url = null;
+		} else {
+			url = browserUrl;
+		}
 		webView.innerSetUrl(url);
 		webView.invokeLater(new Runnable() {
 			public void run() {
@@ -63,4 +70,20 @@ final class BrowserDelegate {
 		});
 	}
 
+	public void browserTitleChanged(final int browserId,
+			final String browserTitle) {
+		final String title;
+		if (browserTitle != null && browserTitle.length() == 0) {
+			title = null;
+		} else {
+			title = browserTitle;
+		}
+		webView.innerSetTitle(title);
+		webView.invokeLater(new Runnable() {
+			public void run() {
+				BrowserDelegate.this.webView.notifyTitleChanged(browserId,
+						title);
+			}
+		});
+	}
 }

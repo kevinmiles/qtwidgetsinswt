@@ -18,6 +18,7 @@
 package org.symbian.tools.eclipseqt.workbench.browser;
 
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
@@ -28,12 +29,19 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class QtBasedBrowserView extends ViewPart {
 	private QtBasedBrowserPane browserPane;
-
+	
 	public void createPartControl(Composite parent) {
 		browserPane = new QtBasedBrowserPane() {
 			@Override
 			protected IStatusLineManager getStatusLineManager() {
 				return getViewSite().getActionBars().getStatusLineManager();
+			}
+			
+			protected void setImage(Image image) {
+				setTitleImage(image);
+				setTitleToolTip(getBrowser().getUrl());
+				String title = getBrowser().getTitle();
+				setPartName(title != null ? title : getBrowser().getUrl());
 			}
 		};
 		browserPane.createPartControl(parent);
