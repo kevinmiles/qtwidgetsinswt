@@ -58,7 +58,7 @@ public:
 	virtual void loadProgress(SWTQWebView*, int) = 0;
 	virtual void loadFinished(SWTQWebView*, bool) = 0;
 	virtual void urlChanged(SWTQWebView*, const char*) = 0;
-    virtual void titleChanged(SWTQWidget*, const char*) = 0;
+	virtual void titleChanged(SWTQWidget*, const char*) = 0;
 };
 
 class SWTQWebView: public SWTQWidget {
@@ -75,7 +75,7 @@ public:
 	bool canGoForward();
 	void stop();
 	void refresh();
-    unsigned char* getImageData(int* w, int* h, int* bpp, int* arrayLength);
+	unsigned char* getImageData(int* w, int* h, int* bpp, int* arrayLength);
 	QWebView* qWebView();
 	void setIconsDbPath(const char*);
 	virtual ~SWTQWebView();

@@ -25,7 +25,7 @@ void SWTQWidget::resize(int x, int y, int w, int h) {
 	panel->resize(x, y, w, h);
 }
 
-SWTQWidget::~SWTQWebView() {}
+SWTQWidget::~SWTQWidget() {}
 
 SWTQWebView::SWTQWebView(int handle, QWebViewDelegate *delegate) : SWTQWidget(handle) {
 	layout = new QStackedLayout;
